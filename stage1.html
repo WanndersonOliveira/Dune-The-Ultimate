@@ -2188,6 +2188,9 @@
 
 		function inicioAbaixar(){
 			abaixo = setInterval(abaixar,200);
+			clearInterval(esquerda);
+			clearInterval(direita);
+			clearInterval(acima);
 		}
 
 		function fimAbaixar(){
@@ -2196,6 +2199,9 @@
 
 		function inicioSubir(){
 			acima = setInterval(subir, 200);
+			clearInterval(esquerda);
+			clearInterval(direita);
+			clearInterval(abaixo);
 		}
 
 		function fimSubir(){
@@ -2204,6 +2210,9 @@
 
 		function inicioEsquerda(){
 			esquerda = setInterval(esquerdar,200);
+			clearInterval(abaixo);
+			clearInterval(direita);
+			clearInterval(acima);
 		}
 
 		function fimEsquerda(){
@@ -2212,6 +2221,9 @@
 
 		function inicioDireita(){
 			direita = setInterval(direitar,200);
+			clearInterval(esquerda);
+			clearInterval(abaixo);
+			clearInterval(acima);
 		}
 
 		function fimDireita(){
