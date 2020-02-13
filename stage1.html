@@ -32,30 +32,35 @@
 			display: block;
 		}	
 
+		#proj {
+			position: absolute;
+			top: 40px;
+			left: 800px;
+			width: 15px;
+			height: 3px;
+			z-index: 2;
+			background-color: red;
+			display: none;
+		}
+
 
 		#enemy, #enemy3 {
 			position: absolute;
 			top: 30px;
 			left: 800px;
-			height: 50px;
-			width: 50px;
-			background-color: brown;
+			height: 70px;
+			width: 70px;
 			z-index: 3;
 			display: block;
-		}
-
-		#enemy3 {
-			background-color: blue;
 		}
 
 		#enemy2 {
 			position: absolute;
 			top: 500px;
 			left: 800px;
-			height: 50px;
-			width: 50px;
-			background-color: red;
-			z-index: 2;
+			height: 70px;
+			width: 70px;
+			z-index: 3;
 			display: block;
 		}
 
@@ -65,8 +70,8 @@
 		#bala7, #bala8, #bala9, #bala10, #bala11
 		{
 			position: absolute;
-			top: 20px;
-			left: 800px;
+			top: 50px;
+			left: 850px;
 			height: 2px;
 			width: 10px;
 			z-index: 1;
@@ -129,19 +134,62 @@
 			width: 100px;
 			background-color: brown;
 		}
+
+		#botao {
+			position: absolute;
+			top: 55%;
+			left: 75%;
+			height: 100px;
+			width: 100px;
+			border-style: solid;
+			border-width: 1px;
+			border-radius: 15%;
+			background-color: black;
+		}
+
+
+		#game_over {
+			position: absolute;
+			top: 30%;
+			left: 30%;
+			width: 30%;
+			height: 300px;
+			background-color: grey;
+			border-style: default;
+			border-width: 0px;
+			border-radius: 15%;
+			z-index: 5;
+			display: none;
+		}
+
+		#go_tit {
+			position: absolute;
+			top: 50px;
+			left: 10%;
+			font-size: 2.5em;
+			color: red;
+		}
+
+		#reiniciar {
+			position: absolute;
+			top: 200px;
+			left: 15%;
+			font-size: 1.3em;
+		}
 		
 	</style>
 
 	<script type="text/javascript">
-		var nave = {x: -70, y: 30, vivo: true};
+		var nave = {x: -70, y: 30, vivo: true, bala: {x:40,y:20}};
 		var abaixo, acima, esquerda, direita = 0;
+		var tempoBala = 0;
 
 
-		var enemy = {x:800, y: 30, subindo: false, tempo: 0, bala: [{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}]};
+		var enemy = {x:800, y: 30, subindo: false, tempo: 0, bala: [{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}], vivo: true, tiros:0};
 
-		var enemy2 = {x:800, y: 500, subindo: true, bala: [{x: 800, y: 500}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}]};
+		var enemy2 = {x:800, y: 500, subindo: true, bala: [{x: 800, y: 500}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}], vivo: true,tiros:0};
 
-		var enemy3 = {x:800, y: 30, subindo: false, bala: [{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}]};
+		var enemy3 = {x:800, y: 30, subindo: false, bala: [{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}], vivo: true,tiros:0};
 
 		var tempo = 0; //Tempo de jogo
 
@@ -152,6 +200,14 @@
 		}
 
 		function movimentoInimigo1(){
+
+			var nave_len = document.getElementById("nave").style.width;
+			var nave_hei = document.getElementById("nave").style.height;
+
+			var balaPos = {x:0,y:0};
+			balaPos.x = enemy.x+(nave_len/2);
+			balaPos.y = enemy.y+(nave_hei/2);
+
 
 			if(nave.x < 100 & tempo < 5){
 				nave.x+=10;
@@ -199,7 +255,7 @@
 				tempo++;
 			}
 
-			if(((tempo >= 60 & tempo < 70)|(tempo >= 150 & tempo < 170) | tempo >= 240) & enemy.x >= 0){
+			if(((tempo >= 60 & tempo < 70)|(tempo >= 150 & tempo < 170) | tempo >= 240) & enemy.x >= -50){
 				enemy.x -= 50;
 				document.getElementById("enemy").style.left = enemy.x+"px";
 			}
@@ -207,7 +263,8 @@
 			if(tempo == 88 | tempo == 178){
 				enemy.x = 800;
 				enemy.y = 30;
-
+				enemy.tiros = 0;
+				document.getElementById("enemy").src = "img/cargoship.png";
 				document.getElementById("enemy").style.left = enemy.x+"px";
 				document.getElementById("enemy").style.top = enemy.y+"px";
 			}
@@ -217,78 +274,78 @@
 
 
 			if(tempo >= 0 & tempo < 5){
-				enemy.bala[0].x=enemy.x+5;
-				enemy.bala[0].y=enemy.y+10;
+				enemy.bala[0].x=balaPos.x;
+				enemy.bala[0].y=balaPos.y;
 				document.getElementById("bala").style.left = enemy.bala[0].x+"px";
 				document.getElementById("bala").style.top = enemy.bala[0].y+"px";
 			}
 
 			if(tempo >= 5 & tempo < 10){
-				enemy.bala[1].x=enemy.x+5;
-				enemy.bala[1].y=enemy.y+10;
+				enemy.bala[1].x=balaPos.x;
+				enemy.bala[1].y=balaPos.y;
 				document.getElementById("bala2").style.left = enemy.bala[1].x+"px";
 				document.getElementById("bala2").style.top = enemy.bala[1].y+"px";
 			}
 
 			if(tempo >= 10 & tempo < 15){
-				enemy.bala[2].x=enemy.x+5;
-				enemy.bala[2].y=enemy.y+10;
+				enemy.bala[2].x=balaPos.x;
+				enemy.bala[2].y=balaPos.y;
 				document.getElementById("bala3").style.left = enemy.bala[2].x+"px";
 				document.getElementById("bala3").style.top = enemy.bala[2].y+"px";
 			}
 
 			if(tempo >= 15 & tempo < 20){
-				enemy.bala[3].x=enemy.x+5;
-				enemy.bala[3].y=enemy.y+10;
+				enemy.bala[3].x=balaPos.x;
+				enemy.bala[3].y=balaPos.y;
 				document.getElementById("bala4").style.left = enemy.bala[3].x+"px";
 				document.getElementById("bala4").style.top = enemy.bala[3].y+"px";
 			}
 
 			if(tempo >= 20 & tempo < 25){
-				enemy.bala[4].x=enemy.x+5;
-				enemy.bala[4].y=enemy.y+10;
+				enemy.bala[4].x=balaPos.x;
+				enemy.bala[4].y=balaPos.y;
 				document.getElementById("bala5").style.left = enemy.bala[4].x+"px";
 				document.getElementById("bala5").style.top = enemy.bala[4].y+"px";
 			}
 
 			if(tempo >= 25 & tempo < 30){
-				enemy.bala[5].x=enemy.x+5;
-				enemy.bala[5].y=enemy.y+10;
+				enemy.bala[5].x=balaPos.x;
+				enemy.bala[5].y=balaPos.y;
 				document.getElementById("bala6").style.left = enemy.bala[5].x+"px";
 				document.getElementById("bala6").style.top = enemy.bala[5].y+"px";
 			}
 
 			if(tempo >= 30 & tempo < 35){
-				enemy.bala[6].x=enemy.x+5;
-				enemy.bala[6].y=enemy.y+10;
+				enemy.bala[6].x=balaPos.x;
+				enemy.bala[6].y=balaPos.y;
 				document.getElementById("bala7").style.left = enemy.bala[6].x+"px";
 				document.getElementById("bala7").style.top = enemy.bala[6].y+"px";
 			}
 
 			if(tempo >= 35 & tempo < 40){
-				enemy.bala[7].x=enemy.x+5;
-				enemy.bala[7].y=enemy.y+10;
+				enemy.bala[7].x=balaPos.x;
+				enemy.bala[7].y=balaPos.y;
 				document.getElementById("bala8").style.left = enemy.bala[7].x+"px";
 				document.getElementById("bala8").style.top = enemy.bala[7].y+"px";
 			}
 
 			if(tempo >= 40 & tempo < 45){
-				enemy.bala[8].x=enemy.x+5;
-				enemy.bala[8].y=enemy.y+10;
+				enemy.bala[8].x=balaPos.x;
+				enemy.bala[8].y=balaPos.y;
 				document.getElementById("bala9").style.left = enemy.bala[8].x+"px";
 				document.getElementById("bala9").style.top = enemy.bala[8].y+"px";
 			}
 
 			if(tempo >= 45 & tempo < 50){
-				enemy.bala[9].x=enemy.x+5;
-				enemy.bala[9].y=enemy.y+10;
+				enemy.bala[9].x=balaPos.x;
+				enemy.bala[9].y=balaPos.y;
 				document.getElementById("bala10").style.left = enemy.bala[9].x+"px";
 				document.getElementById("bala10").style.top = enemy.bala[9].y+"px";
 			}
 
 			if(tempo >= 50 & tempo < 55){
-				enemy.bala[10].x=enemy.x+5;
-				enemy.bala[10].y=enemy.y+10;
+				enemy.bala[10].x=balaPos.x;
+				enemy.bala[10].y=balaPos.y;
 				document.getElementById("bala11").style.left = enemy.bala[10].x+"px";
 				document.getElementById("bala11").style.top = enemy.bala[10].y+"px";
 			}
@@ -462,7 +519,7 @@
 			if((tempo >= 5 & tempo < 15) & enemy.bala[0].x > 0){
 
 				if(tempo == 5){
-					enemy.bala[0].y = enemy.y;
+					enemy.bala[0].y = balaPos.y;
 				}
 
 				enemy.bala[0].x-=30;
@@ -473,7 +530,7 @@
 			if((tempo >= 10 & tempo < 20) & enemy.bala[1].x > 0){
 
 				if(tempo == 10){
-					enemy.bala[1].y = enemy.y;
+					enemy.bala[1].y = balaPos.y;
 				}
 
 				enemy.bala[1].x-=30;
@@ -484,7 +541,7 @@
 			if((tempo >= 15 & tempo < 25) & enemy.bala[2].x > 0){
 
 				if(tempo == 15){
-					enemy.bala[2].y = enemy.y;
+					enemy.bala[2].y = balaPos.y;
 				}
 
 				enemy.bala[2].x-=30;
@@ -495,7 +552,7 @@
 			if((tempo >= 20 & tempo < 35) & enemy.bala[3].x > 0){
 
 				if(tempo == 20){
-					enemy.bala[3].y = enemy.y;
+					enemy.bala[3].y = balaPos.y;
 				}
 
 				enemy.bala[3].x-=30;
@@ -506,7 +563,7 @@
 			if((tempo >= 25 & tempo < 35) & enemy.bala[4].x > 0){
 
 				if(tempo == 25){
-					enemy.bala[4].y = enemy.y;
+					enemy.bala[4].y = balaPos.y;
 				}
 
 				enemy.bala[4].x-=30;
@@ -517,7 +574,7 @@
 			if((tempo >= 30 & tempo < 40) & enemy.bala[5].x > 0){
 
 				if(tempo == 30){
-					enemy.bala[5].y = enemy.y;
+					enemy.bala[5].y = balaPos.y;
 				}
 
 				enemy.bala[5].x-=30;
@@ -528,7 +585,7 @@
 			if((tempo >= 35 & tempo < 50) & enemy.bala[5].x > 0){
 
 				if(tempo == 35){
-					enemy.bala[6].y = enemy.y;
+					enemy.bala[6].y = balaPos.y;
 				}
 
 				enemy.bala[6].x-=30;
@@ -539,7 +596,7 @@
 			if((tempo >= 40 & tempo < 50) & enemy.bala[6].x > 0){
 
 				if(tempo == 40){
-					enemy.bala[7].y = enemy.y;
+					enemy.bala[7].y = balaPos.y;
 				}
 
 				enemy.bala[7].x-=30;
@@ -550,7 +607,7 @@
 			if((tempo >= 45 & tempo < 55) & enemy.bala[8].x > 0){
 
 				if(tempo == 45){
-					enemy.bala[8].y = enemy.y;
+					enemy.bala[8].y = balaPos.y;
 				}
 
 				enemy.bala[8].x-=30;
@@ -562,7 +619,7 @@
 			if((tempo >= 50 & tempo < 60) & enemy.bala[9].x > 0){
 
 				if(tempo == 50){
-					enemy.bala[9].y = enemy.y;
+					enemy.bala[9].y = balaPos.y;
 				}
 
 				enemy.bala[9].x-=30;
@@ -573,7 +630,7 @@
 			if((tempo >= 55 & tempo < 65) & enemy.bala[10].x > 0){
 
 				if(tempo == 55){
-					enemy.bala[10].y = enemy.y;
+					enemy.bala[10].y = balaPos.y;
 				}
 
 				enemy.bala[10].x-=30;
@@ -829,6 +886,29 @@
 				document.getElementById("bala11").style.top = enemy.bala[10].y+"px";
 			}
 
+			//Colisão bala inimiga -> nave
+
+			for(var i = 0; i <= 10; i++){
+
+				if(((enemy.bala[i].x <= nave.x & enemy.bala[i].x >= nave.x-30) & ((enemy.bala[i].y >= nave.y) & (enemy.bala[i].y <= nave.y+50)))){
+
+					nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+				}
+
+			}
+
 
 			enemy.tempo++;
 		}
@@ -865,7 +945,7 @@
 				}
 			}
 
-			if(((tempo >= 90 & tempo < 110) | (tempo >= 180 & tempo < 200) | tempo >= 270) & enemy2.x >= 0){
+			if(((tempo >= 90 & tempo < 110) | (tempo >= 180 & tempo < 200) | tempo >= 270) & enemy2.x >= -50){
 				enemy2.x -= 50;
 				document.getElementById("enemy2").style.left = enemy2.x+"px";
 			}
@@ -873,7 +953,9 @@
 			if(tempo == 118 | tempo == 208){
 				enemy2.x = 800;
 				enemy2.y = 500;
+				enemy2.tiros = 0;
 
+				document.getElementById("enemy2").src = "img/cargoship.png";
 				document.getElementById("enemy2").style.left = enemy2.x+"px";
 				document.getElementById("enemy2").style.top = enemy2.y+"px";
 			}
@@ -1493,6 +1575,27 @@
 				document.getElementById("bala11").style.top = enemy2.bala[10].y+"px";
 			}
 
+			//Colisão bala inimiga -> nave
+
+			for(var i = 0; i <= 10; i++){
+
+				if(((enemy2.bala[i].x <= nave.x & enemy2.bala[i].x >= nave.x-30) & ((enemy2.bala[i].y >= nave.y) & (enemy2.bala[i].y <= nave.y+50)))){
+
+					nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+				}
+			}
 
 
 		}
@@ -1523,7 +1626,7 @@
 				}
 			}
 
-			if(((tempo >= 120 & tempo < 140) | (tempo >= 210 & tempo < 230) | tempo >= 300) & enemy3.x >= 0){
+			if(((tempo >= 120 & tempo < 140) | (tempo >= 210 & tempo < 230) | tempo >= 300) & enemy3.x >= -50){
 				enemy3.x -= 50;
 				document.getElementById("enemy3").style.left = enemy3.x+"px";
 			}
@@ -1531,7 +1634,9 @@
 			if(tempo == 148 | tempo == 238){
 				enemy3.x = 800;
 				enemy3.y = 30;
+				enemy3.tiros = 0;
 
+				document.getElementById("enemy3").src = "img/cargoship.png";
 				document.getElementById("enemy3").style.left = enemy3.x+"px";
 				document.getElementById("enemy3").style.top = enemy3.y+"px";
 			}
@@ -2184,7 +2289,121 @@
 				document.getElementById("bala11").style.top = enemy3.bala[10].y+"px";
 			}
 
+
+			//Colisão bala inimiga -> nave
+
+			for(var i = 0; i <= 10; i++){
+
+				if(((enemy3.bala[i].x <= nave.x & enemy3.bala[i].x >= nave.x-30) & ((enemy3.bala[i].y >= nave.y) & (enemy3.bala[i].y <= nave.y+50)))){
+
+					nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+				}
+			}
+
 		}
+
+
+
+		function init_atirar(){
+
+			if(nave.bala.x >= 800){
+				nave.bala.x = nave.x+25;
+				nave.bala.y = nave.y+25;
+ 
+				document.getElementById("proj").style.top = nave.bala.y+"px";
+				document.getElementById("proj").style.left =  nave.bala.x+"px";
+				document.getElementById("proj").style.display =  "block";
+			}
+			
+
+			tempoBala = setInterval(atirar,200);
+		}
+
+		function atirar(){
+			
+			if(nave.bala.x < 800){
+				nave.bala.x+=30;
+				document.getElementById("proj").style.left =  nave.bala.x+"px";
+
+				if(((nave.bala.x+13 >= enemy.x & nave.bala.x+13 <= enemy.x+30) & ((nave.bala.y >= enemy.y) & (nave.bala.y <= enemy.y+70))) & enemy.tiros < 4){
+
+					if(enemy.tiros < 4){
+						document.getElementById("enemy").src = "img/enemyAtk.gif";
+						enemy.tiros++;
+					}
+
+					if(enemy.tiros == 4){
+
+						setTimeout(()=> {
+							document.getElementById("enemy").src = "img/enemyExplosion.gif";
+						}, 2500);
+
+						setTimeout(() => {
+							enemy.x = -100;
+							document.getElementById("enemy").style.left = enemy.x+"px";
+						}, 4500);
+					}
+				}
+
+				if(((nave.bala.x+13 >= enemy2.x & nave.bala.x+13 <= enemy2.x+30) & ((nave.bala.y >= enemy2.y) & (nave.bala.y <= enemy2.y+70))) & enemy2.tiros < 4){
+
+					if(enemy2.tiros < 4){
+						document.getElementById("enemy2").src = "img/enemyAtk.gif";
+						enemy2.tiros++;
+					}
+
+					if(enemy2.tiros == 4){
+
+						setTimeout(()=> {
+							document.getElementById("enemy2").src = "img/enemyExplosion.gif";
+						}, 2500);
+
+						setTimeout(() => {
+							enemy2.x = -100;
+							document.getElementById("enemy2").style.left = enemy.x+"px";
+						}, 4500);
+					}
+				}
+
+				if(((nave.bala.x+13 >= enemy3.x & nave.bala.x+13 <= enemy3.x+30) & ((nave.bala.y >= enemy3.y) & (nave.bala.y <= enemy3.y+70))) & enemy3.tiros < 4){
+
+					if(enemy3.tiros < 4){
+						document.getElementById("enemy3").src = "img/enemyAtk.gif";
+						enemy3.tiros++;
+					}
+
+					if(enemy3.tiros == 4){
+
+						setTimeout(()=> {
+							document.getElementById("enemy3").src = "img/enemyExplosion.gif";
+						}, 2500);
+
+						setTimeout(() => {
+							enemy3.x = -100;
+							document.getElementById("enemy3").style.left = enemy3.x+"px";
+						}, 4500);
+					}
+				}
+
+
+			} else {
+				clearInterval(tempoBala);
+			}
+		}
+
+
 
 		function inicioAbaixar(){
 			abaixo = setInterval(abaixar,200);
@@ -2195,6 +2414,7 @@
 
 		function fimAbaixar(){
 			clearInterval(abaixo);
+			document.getElementById("nave").src = "img/ship.png";
 		}
 
 		function inicioSubir(){
@@ -2206,6 +2426,7 @@
 
 		function fimSubir(){
 			clearInterval(acima);
+			document.getElementById("nave").src = "img/ship.png";
 		}		
 
 		function inicioEsquerda(){
@@ -2233,28 +2454,30 @@
 
 		function abaixar(){
 
-			if(nave.y <= 500){
+			if(nave.y <= 500 & nave.vivo == true){
 				nave.y+=20;
 				document.getElementById("nave").style.top = nave.y+"px";
+				document.getElementById("nave").src = "img/ship_down.png";
 			}
 		}
 
 		function subir(){
-			if(nave.y >= 30){
+			if(nave.y >= 30 & nave.vivo == true){
 				nave.y-=20;
 				document.getElementById("nave").style.top = nave.y+"px";
+				document.getElementById("nave").src = "img/ship_up.png";
 			}
 		}
 
 		function direitar(){
-			if(nave.x < 200){
+			if(nave.x < 200 & nave.vivo == true){
 				nave.x+=20;
 				document.getElementById("nave").style.left = nave.x+"px";
 			}
 		}
 
 		function esquerdar(){
-			if(nave.x > 50){
+			if(nave.x > 50 & nave.vivo == true){
 				nave.x-=20;
 				document.getElementById("nave").style.left = nave.x+"px";
 			}
@@ -2263,9 +2486,10 @@
 	</script>
 
 	<tela>
-		<div id="enemy"></div>
-		<div id="enemy2"></div>
-		<div id="enemy3"></div>
+
+		<img src="img/cargoship.png" id="enemy">
+		<img src="img/cargoship.png" id="enemy2">
+		<img src="img/cargoship.png" id="enemy3"> 
 
 		<div id="bala"></div>
 		<div id="bala2"></div>
@@ -2279,8 +2503,14 @@
 		<div id="bala10"></div>
 		<div id="bala11"></div>
 
+		<img src="img/ship.png" id="nave">
 
-		<div id="nave"></div>
+		<div id="proj"></div>
+
+		<div id="game_over">
+			<p id="go_tit">Game Over</p>
+			<a href="stage1.html" id="reiniciar">Reiniciar</a>
+		</div>
 
 	</tela>
 
@@ -2290,6 +2520,7 @@
 	<div id="arrow2" onmousedown="inicioAbaixar()" onmouseup="fimAbaixar()"></div>
 	<div id="arrow3" onmousedown="inicioDireita()" onmouseup="fimDireita()"></div>
 	<div id="arrow4" onmousedown="inicioEsquerda()" onmouseup="fimEsquerda()"></div>
+	<div id="botao" onclick="init_atirar()"></div>
 
 	<barra></barra>
 	<barra2></barra2>
