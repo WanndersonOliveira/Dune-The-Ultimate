@@ -50,6 +50,17 @@
 			display: block;
 		}	
 
+		#teste {
+			position: absolute;
+			top: 50px;
+			left: 30%;
+			width: 15%;
+			height: 30px;
+			background-color: red;
+			z-index: 5;
+			display: none;
+		}
+
 		#proj {
 			position: absolute;
 			top: 40px;
@@ -214,7 +225,7 @@
 
 		function movimentoInimigo1(){
 
-			document.getElementById('arrow').addEventListener('pointerdown', inicioSubir, false);
+			/*document.getElementById('arrow').addEventListener('pointerdown', inicioSubir, false);
 			document.getElementById('arrow2').addEventListener('pointerdown', inicioAbaixar, false);
 			document.getElementById('arrow3').addEventListener('pointerdown', inicioDireita, false);
 			document.getElementById('arrow4').addEventListener('pointerdown', inicioEsquerda, false);
@@ -224,7 +235,7 @@
 			document.getElementById('arrow3').addEventListener('pointerup', fimDireita, false);
 			document.getElementById('arrow4').addEventListener('pointerup', fimEsquerda, false);
 
-			document.getElementById('botao').addEventListener('pointerup', init_atirar,false);
+			document.getElementById('botao').addEventListener('pointerup', init_atirar,false);*/
 
 
 
@@ -2357,6 +2368,8 @@
 				document.getElementById("proj").style.left =  nave.bala.x+"px";
 				document.getElementById("proj").style.display =  "block";
 			}
+
+			document.getElementById("teste").style.display = "block";
 			
 
 			tempoBala = setInterval(atirar,200);
@@ -2553,15 +2566,17 @@
 			<a href="stage1.html" id="reiniciar">Reiniciar</a>
 		</div>
 
+		<div id="teste"></div>
+
 	</tela>
 
 	<!--Controles -->
 
-	<button id="arrow" onmousedown="inicioSubir()" onmouseup="fimSubir()"></button>
-	<button id="arrow2" onmousedown="inicioAbaixar()" onmouseup="fimAbaixar()"></button>
-	<button id="arrow3" onmousedown="inicioDireita()" onmouseup="fimDireita()"></button>
-	<button id="arrow4" onmousedown="inicioEsquerda()" onmouseup="fimEsquerda()"></button>
-	<button id="botao" onclick="init_atirar()"></button>
+	<button id="arrow" onmousedown="inicioSubir()" onmouseup="fimSubir()" ontouchstart="inicioSubir()" ontouchend="fimSubir()"></button>
+	<button id="arrow2" onmousedown="inicioAbaixar()" onmouseup="fimAbaixar()" ontouchstart="inicioAbaixar()" ontouchend="fimAbaixar()"></button>
+	<button id="arrow3" onmousedown="inicioDireita()" onmouseup="fimDireita()" ontouchstart="inicioDireita()" ontouchend="fimDireita()"></button>
+	<button id="arrow4" onmousedown="inicioEsquerda()" onmouseup="fimEsquerda()" ontouchstart="inicioEsquerda()" ontouchend="fimEsquerda()"></button>
+	<button id="botao" onclick="init_atirar()" ontouchend="init_atirar()"></button>
 
 	<barra></barra>
 	<barra2></barra2>
