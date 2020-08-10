@@ -1,0 +1,2992 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Dune The Ultimate</title>
+</head>
+<body onload="iniciar()">
+	<style type="text/css">
+		body {
+			background-color: grey;
+		}
+
+		tela {
+			position: absolute;
+			left: 10%;
+			width: 80%;
+			top: 20px;
+			height: 720px;
+			background-color: white;
+			z-index: 0;
+		}
+
+		#sky {
+			position: absolute;
+			left: 0%;
+			top: 0px;
+			width: 100%;
+			height: 400px;
+			z-index: -1;
+		}
+
+		#land {
+			position: absolute;
+			left: -1%;
+			top: 399px;
+			width: 102%;
+			height: 330px;
+			z-index: -1;
+		}
+
+
+		#nave {
+			position: absolute;
+			top: 30px;
+			left: -70px;
+			height: 70px;
+			width: 70px;
+			background-color: black;
+			z-index: 3;
+			display: block;
+		}	
+
+		#proj {
+			position: absolute;
+			top: 40px;
+			left: 800px;
+			width: 15px;
+			height: 3px;
+			z-index: 2;
+			background-color: red;
+			display: none;
+		}
+
+
+		#enemy, #enemy3, #enemy2, #enemyact, #enemy2act, #enemy3act, #finalBoss {
+			position: absolute;
+			top: 30px;
+			left: 800px;
+			height: 120px;
+			width: 120px;
+			z-index: 3;
+			display: none;
+		}
+
+		#finalBoss {
+			height: 140px;
+			width: 140px;
+			top: 300px;
+			display: none;
+		}
+
+		#enemy2 {
+			top: 500px;
+			left: 800px;
+		}
+
+
+
+		#bala, #bala2, #bala3, #bala4, #bala5, #bala6,
+		#bala7, #bala8, #bala9, #bala10, #bala11
+		{
+			position: absolute;
+			top: 50px;
+			left: 850px;
+			height: 4px;
+			width: 15px;
+			z-index: 1;
+			display: none;
+			background-color: black;
+		}
+
+		barra {
+			position: absolute;
+			top: 20px;
+			left: 0%;
+			height: 740px;
+			width: 10%;
+			background-color: grey;
+			z-index: 5;
+		}
+
+		barra2 {
+			position: absolute;
+			top: 20px;
+			left: 90%;
+			height: 740px;
+			width: 10%;
+			background-color: grey;
+			z-index: 5;
+		}
+
+		#arrow, #arrow2, #arrow3, #arrow4 {
+			position: absolute;
+			top: 47%;
+			left: 35%;
+			height: 150px;
+			width: 150px;
+		}
+
+		#arrow2 {
+			top: 60%;
+			left: 35%;
+		}
+
+		#arrow3 {
+			top: 60%;
+			left: 55%;
+		}
+
+		#arrow4 {
+			top: 60%;
+			left: 15%;
+		}
+
+		#botao {
+			position: absolute;
+			top: 55%;
+			left: 75%;
+			height: 150px;
+			width: 150px;
+			border-style: solid;
+			border-width: 1px;
+			border-radius: 30%;
+		}
+
+
+		#game_over {
+			position: absolute;
+			top: 30%;
+			left: 30%;
+			width: 30%;
+			height: 300px;
+			background-color: grey;
+			border-style: default;
+			border-width: 0px;
+			border-radius: 15%;
+			z-index: 5;
+			display: none;
+		}
+
+		#go_tit {
+			position: absolute;
+			top: 50px;
+			left: 10%;
+			font-size: 2.5em;
+			color: red;
+		}
+
+		#reiniciar {
+			position: absolute;
+			top: 200px;
+			left: 15%;
+			font-size: 1.3em;
+		}
+
+		#inimigo {
+			position: absolute;
+			top: 10%;
+			left: 10%;
+			width: 100px;
+			height: 100px;
+			z-index: 4;
+			display: none;
+		}
+
+		#dialogo {
+			position: absolute;
+			top: 70%;
+			left: 5%;
+			width: 600px;
+			height: 150px;
+			display: none;
+			border-style: default;
+			border-width: 0px;
+			border-radius: 15%;
+			z-index: 4;
+			background-color: grey;
+		}
+
+		#dialogo_txt{
+			position: absolute;
+			top: 10%;
+			left: 35%;
+			width: 300px;
+			height: 100px;
+			z-index: 4;
+			font-size: 1.5em;
+		}
+		
+	</style>
+
+	<script type="text/javascript">
+		var nave = {x: -70, y: 30, vivo: true, bala: {x:40,y:20}};
+		var abaixo, acima, esquerda, direita = 0;
+		var tempoBala = 0;
+
+
+		var enemy = {x:800, y: 30, subindo: false, tempo: 0, bala: [{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}], vivo: true, tiros:0};
+
+		var enemy2 = {x:800, y: 500, subindo: true, bala: [{x: 800, y: 500}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}], vivo: true,tiros:0};
+
+		var enemy3 = {x:800, y: 30, subindo: false, bala: [{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40},{x: 800, y: 40}, {x: 800, y: 40},{x: 800, y: 40}], vivo: true,tiros:0};
+
+		var finalBoss = {x:800, y:300, subindo: false, tiros: 0, vivo: true};
+
+		var tempo = 0; //Tempo de jogo
+
+		function iniciar(){
+			setInterval(movimentoInimigo1,200);
+			setInterval(movimentoInimigo2,200);
+			setInterval(movimentoInimigo3,200);
+		}
+
+		function movimentoInimigo1(){
+
+			var nave_len = document.getElementById("nave").style.width;
+			var nave_hei = document.getElementById("nave").style.height;
+
+			var balaPos = {x:0,y:0};
+			balaPos.x = enemy.x+(nave_len/2);
+			balaPos.y = enemy.y+(nave_hei/2);
+
+
+			if(nave.x < 100 & tempo < 5){
+				nave.x+=10;
+
+				document.getElementById("nave").style.left = nave.x+"px";
+			}
+
+
+
+			if(enemy.x > 700){
+				enemy.x=enemy.x-10;
+
+				document.getElementById("enemy").style.display = "block";
+				document.getElementById("enemy").style.left = enemy.x+"px";
+			}
+
+			if(enemy.x == 700){
+				if(enemy.y < 500 & enemy.subindo == false){
+					enemy.y+=15;
+
+
+					document.getElementById("enemy").style.top = enemy.y+"px";
+				}
+
+				if(enemy.y >= 500){
+					enemy.subindo = true;
+				}
+
+				if(enemy.y > 30 & enemy.subindo == true){
+					enemy.y-=15;
+
+
+
+					document.getElementById("enemy").style.top = enemy.y+"px";
+					
+				}
+
+				if(enemy.y <= 30){
+					enemy.subindo = false;
+				}
+			}
+
+			if(enemy.tempo % 5 == 0){
+				console.log(tempo+" s");
+				tempo++;
+			}
+
+			if(((tempo >= 60 & tempo < 70)|(tempo >= 150 & tempo < 170) | tempo >= 240) & enemy.x >= -50){
+				enemy.x -= 50;
+				document.getElementById("enemy").style.left = enemy.x+"px";
+			}
+
+			if(tempo == 88 | tempo == 178){
+				enemy.x = 800;
+				enemy.y = 30;
+				enemy.tiros = 0;
+				document.getElementById("enemy").src = "img/cargoship.png";
+				document.getElementById("enemy").style.left = enemy.x+"px";
+				document.getElementById("enemy").style.top = enemy.y+"px";
+			}
+
+
+			//Posicionamento da bala
+
+
+			if(tempo >= 0 & tempo < 5){
+				enemy.bala[0].x=balaPos.x;
+				enemy.bala[0].y=balaPos.y;
+				document.getElementById("bala").style.left = enemy.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy.bala[0].y+"px";
+			}
+
+			if(tempo >= 5 & tempo < 10){
+				enemy.bala[1].x=balaPos.x;
+				enemy.bala[1].y=balaPos.y;
+				document.getElementById("bala2").style.left = enemy.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy.bala[1].y+"px";
+			}
+
+			if(tempo >= 10 & tempo < 15){
+				enemy.bala[2].x=balaPos.x;
+				enemy.bala[2].y=balaPos.y;
+				document.getElementById("bala3").style.left = enemy.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy.bala[2].y+"px";
+			}
+
+			if(tempo >= 15 & tempo < 20){
+				enemy.bala[3].x=balaPos.x;
+				enemy.bala[3].y=balaPos.y;
+				document.getElementById("bala4").style.left = enemy.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy.bala[3].y+"px";
+			}
+
+			if(tempo >= 20 & tempo < 25){
+				enemy.bala[4].x=balaPos.x;
+				enemy.bala[4].y=balaPos.y;
+				document.getElementById("bala5").style.left = enemy.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy.bala[4].y+"px";
+			}
+
+			if(tempo >= 25 & tempo < 30){
+				enemy.bala[5].x=balaPos.x;
+				enemy.bala[5].y=balaPos.y;
+				document.getElementById("bala6").style.left = enemy.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy.bala[5].y+"px";
+			}
+
+			if(tempo >= 30 & tempo < 35){
+				enemy.bala[6].x=balaPos.x;
+				enemy.bala[6].y=balaPos.y;
+				document.getElementById("bala7").style.left = enemy.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy.bala[6].y+"px";
+			}
+
+			if(tempo >= 35 & tempo < 40){
+				enemy.bala[7].x=balaPos.x;
+				enemy.bala[7].y=balaPos.y;
+				document.getElementById("bala8").style.left = enemy.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy.bala[7].y+"px";
+			}
+
+			if(tempo >= 40 & tempo < 45){
+				enemy.bala[8].x=balaPos.x;
+				enemy.bala[8].y=balaPos.y;
+				document.getElementById("bala9").style.left = enemy.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy.bala[8].y+"px";
+			}
+
+			if(tempo >= 45 & tempo < 50){
+				enemy.bala[9].x=balaPos.x;
+				enemy.bala[9].y=balaPos.y;
+				document.getElementById("bala10").style.left = enemy.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy.bala[9].y+"px";
+			}
+
+			if(tempo >= 50 & tempo < 55){
+				enemy.bala[10].x=balaPos.x;
+				enemy.bala[10].y=balaPos.y;
+				document.getElementById("bala11").style.left = enemy.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy.bala[10].y+"px";
+			}
+
+
+			//Segunda aparição
+
+			if(tempo >= 90 & tempo < 95){
+				enemy.bala[0].x=enemy.x+5;
+				enemy.bala[0].y=enemy.y+10;
+				document.getElementById("bala").style.left = enemy.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy.bala[0].y+"px";
+				document.getElementById("bala").style.display = "none";
+			}
+
+			if(tempo >= 95 & tempo < 100){
+				enemy.bala[1].x=enemy.x+5;
+				enemy.bala[1].y=enemy.y+10;
+				document.getElementById("bala2").style.left = enemy.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "none";
+			}
+
+			if(tempo >= 100 & tempo < 105){
+				enemy.bala[2].x=enemy.x+5;
+				enemy.bala[2].y=enemy.y+10;
+				document.getElementById("bala3").style.left = enemy.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "none";
+			}
+
+			if(tempo >= 105 & tempo < 110){
+				enemy.bala[3].x=enemy.x+5;
+				enemy.bala[3].y=enemy.y+10;
+				document.getElementById("bala4").style.left = enemy.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "none";
+			}
+
+			if(tempo >= 110 & tempo < 115){
+				enemy.bala[4].x=enemy.x+5;
+				enemy.bala[4].y=enemy.y+10;
+				document.getElementById("bala5").style.left = enemy.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "none";
+			}
+
+			if(tempo >= 115 & tempo < 120){
+				enemy.bala[5].x=enemy.x+5;
+				enemy.bala[5].y=enemy.y+10;
+				document.getElementById("bala6").style.left = enemy.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "none";
+			}
+
+			if(tempo >= 120 & tempo < 125){
+				enemy.bala[6].x=enemy.x+5;
+				enemy.bala[6].y=enemy.y+10;
+				document.getElementById("bala7").style.left = enemy.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "none";
+			}
+
+			if(tempo >= 125 & tempo < 130){
+				enemy.bala[7].x=enemy.x+5;
+				enemy.bala[7].y=enemy.y+10;
+				document.getElementById("bala8").style.left = enemy.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "none";
+			}
+
+			if(tempo >= 130 & tempo < 135){
+				enemy.bala[8].x=enemy.x+5;
+				enemy.bala[8].y=enemy.y+10;
+				document.getElementById("bala9").style.left = enemy.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "none";
+			}
+
+			if(tempo >= 135 & tempo < 140){
+				enemy.bala[9].x=enemy.x+5;
+				enemy.bala[9].y=enemy.y+10;
+				document.getElementById("bala10").style.left = enemy.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "none";
+			}
+
+			if(tempo >= 140 & tempo < 145){
+				enemy.bala[10].x=enemy.x+5;
+				enemy.bala[10].y=enemy.y+10;
+				document.getElementById("bala11").style.left = enemy.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "none";
+			}
+
+			// Terceira aparição
+
+
+
+			if(tempo >= 180 & tempo < 185){
+				enemy.bala[0].x=enemy.x+5;
+				enemy.bala[0].y=enemy.y+10;
+				document.getElementById("bala").style.left = enemy.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy.bala[0].y+"px";
+				document.getElementById("bala").style.display = "none";
+			}
+
+			if(tempo >= 185 & tempo < 190){
+				enemy.bala[1].x=enemy.x+5;
+				enemy.bala[1].y=enemy.y+10;
+				document.getElementById("bala2").style.left = enemy.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "none";
+			}
+
+			if(tempo >= 190 & tempo < 195){
+				enemy.bala[2].x=enemy.x+5;
+				enemy.bala[2].y=enemy.y+10;
+				document.getElementById("bala3").style.left = enemy.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "none";
+			}
+
+			if(tempo >= 195 & tempo < 200){
+				enemy.bala[3].x=enemy.x+5;
+				enemy.bala[3].y=enemy.y+10;
+				document.getElementById("bala4").style.left = enemy.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "none";
+			}
+
+			if(tempo >= 200 & tempo < 205){
+				enemy.bala[4].x=enemy.x+5;
+				enemy.bala[4].y=enemy.y+10;
+				document.getElementById("bala5").style.left = enemy.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "none";
+			}
+
+			if(tempo >= 205 & tempo < 210){
+				enemy.bala[5].x=enemy.x+5;
+				enemy.bala[5].y=enemy.y+10;
+				document.getElementById("bala6").style.left = enemy.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "none";
+			}
+
+			if(tempo >= 210 & tempo < 215){
+				enemy.bala[6].x=enemy.x+5;
+				enemy.bala[6].y=enemy.y+10;
+				document.getElementById("bala7").style.left = enemy.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "none";
+			}
+
+			if(tempo >= 215 & tempo < 220){
+				enemy.bala[7].x=enemy.x+5;
+				enemy.bala[7].y=enemy.y+10;
+				document.getElementById("bala8").style.left = enemy.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "none";
+			}
+
+			if(tempo >= 220 & tempo < 225){
+				enemy.bala[8].x=enemy.x+5;
+				enemy.bala[8].y=enemy.y+10;
+				document.getElementById("bala9").style.left = enemy.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "none";
+			}
+
+			if(tempo >= 225 & tempo < 230){
+				enemy.bala[9].x=enemy.x+5;
+				enemy.bala[9].y=enemy.y+10;
+				document.getElementById("bala10").style.left = enemy.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "none";
+			}
+
+			if(tempo >= 230 & tempo < 235){
+				enemy.bala[10].x=enemy.x+5;
+				enemy.bala[10].y=enemy.y+10;
+				document.getElementById("bala11").style.left = enemy.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "none";
+			}
+
+
+
+
+			//Tiro
+
+			if((tempo >= 5 & tempo < 15) & enemy.bala[0].x > 0){
+
+				if(tempo == 5){
+					enemy.bala[0].y = balaPos.y;
+				}
+
+				enemy.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy.bala[0].y+"px";
+				document.getElementById("bala").style.display="block";
+			}
+
+			if((tempo >= 10 & tempo < 20) & enemy.bala[1].x > 0){
+
+				if(tempo == 10){
+					enemy.bala[1].y = balaPos.y;
+				}
+
+				enemy.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 15 & tempo < 25) & enemy.bala[2].x > 0){
+
+				if(tempo == 15){
+					enemy.bala[2].y = balaPos.y;
+				}
+
+				enemy.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 20 & tempo < 35) & enemy.bala[3].x > 0){
+
+				if(tempo == 20){
+					enemy.bala[3].y = balaPos.y;
+				}
+
+				enemy.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 25 & tempo < 35) & enemy.bala[4].x > 0){
+
+				if(tempo == 25){
+					enemy.bala[4].y = balaPos.y;
+				}
+
+				enemy.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 30 & tempo < 40) & enemy.bala[5].x > 0){
+
+				if(tempo == 30){
+					enemy.bala[5].y = balaPos.y;
+				}
+
+				enemy.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 35 & tempo < 50) & enemy.bala[5].x > 0){
+
+				if(tempo == 35){
+					enemy.bala[6].y = balaPos.y;
+				}
+
+				enemy.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 40 & tempo < 50) & enemy.bala[6].x > 0){
+
+				if(tempo == 40){
+					enemy.bala[7].y = balaPos.y;
+				}
+
+				enemy.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 45 & tempo < 55) & enemy.bala[8].x > 0){
+
+				if(tempo == 45){
+					enemy.bala[8].y = balaPos.y;
+				}
+
+				enemy.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+
+			if((tempo >= 50 & tempo < 60) & enemy.bala[9].x > 0){
+
+				if(tempo == 50){
+					enemy.bala[9].y = balaPos.y;
+				}
+
+				enemy.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 55 & tempo < 65) & enemy.bala[10].x > 0){
+
+				if(tempo == 55){
+					enemy.bala[10].y = balaPos.y;
+				}
+
+				enemy.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+			//Segunda aparição
+
+			if((tempo >= 95 & tempo < 105) & enemy.bala[0].x > 0){
+
+				if(tempo == 95){
+					enemy.bala[0].y = enemy.y;
+				}
+
+				enemy.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy.bala[0].y+"px";
+				document.getElementById("bala").style.display = "block";
+			}
+
+			if((tempo >= 100 & tempo < 110) & enemy.bala[1].x > 0){
+
+				if(tempo == 100){
+					enemy.bala[1].y = enemy.y;
+				}
+
+				enemy.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 105 & tempo < 115) & enemy.bala[2].x > 0){
+
+				if(tempo == 105){
+					enemy.bala[2].y = enemy.y;
+				}
+
+				enemy.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 110 & tempo < 120) & enemy.bala[3].x > 0){
+
+				if(tempo == 110){
+					enemy.bala[3].y = enemy.y;
+				}
+
+				enemy.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 115 & tempo < 125) & enemy.bala[4].x > 0){
+
+				if(tempo == 115){
+					enemy.bala[4].y = enemy.y;
+				}
+
+				enemy.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 120 & tempo < 130) & enemy.bala[5].x > 0){
+
+				if(tempo == 120){
+					enemy.bala[5].y = enemy.y;
+				}
+
+				enemy.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 125 & tempo < 135) & enemy.bala[6].x > 0){
+
+				if(tempo == 125){
+					enemy.bala[6].y = enemy.y;
+				}
+
+				enemy.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 130 & tempo < 140) & enemy.bala[7].x > 0){
+
+				if(tempo == 130){
+					enemy.bala[7].y = enemy.y;
+				}
+
+				enemy.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 135 & tempo < 145) & enemy.bala[8].x > 0){
+
+				if(tempo == 135){
+					enemy.bala[8].y = enemy.y;
+				}
+
+				enemy.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+			if((tempo >= 140 & tempo < 150) & enemy.bala[9].x > 0){
+
+				if(tempo == 140){
+					enemy.bala[9].y = enemy.y;
+				}
+
+				enemy.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 145 & tempo < 155) & enemy.bala[10].x > 0){
+
+				if(tempo == 145){
+					enemy.bala[10].y = enemy.y;
+				}
+
+				enemy.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+			//Terceira aparição
+
+
+
+			if((tempo >= 185 & tempo < 195) & enemy.bala[0].x > 0){
+
+				if(tempo == 185){
+					enemy.bala[0].y = enemy.y;
+				}
+
+				enemy.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy.bala[0].y+"px";
+				document.getElementById("bala").style.display = "block";
+			}
+
+			if((tempo >= 190 & tempo < 200) & enemy.bala[1].x > 0){
+
+				if(tempo == 190){
+					enemy.bala[1].y = enemy.y;
+				}
+
+				enemy.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 195 & tempo < 205) & enemy.bala[2].x > 0){
+
+				if(tempo == 195){
+					enemy.bala[2].y = enemy.y;
+				}
+
+				enemy.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 200 & tempo < 210) & enemy.bala[3].x > 0){
+
+				if(tempo == 200){
+					enemy.bala[3].y = enemy.y;
+				}
+
+				enemy.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 205 & tempo < 215) & enemy.bala[4].x > 0){
+
+				if(tempo == 205){
+					enemy.bala[4].y = enemy.y;
+				}
+
+				enemy.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 210 & tempo < 120) & enemy.bala[5].x > 0){
+
+				if(tempo == 210){
+					enemy.bala[5].y = enemy.y;
+				}
+
+				enemy.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 215 & tempo < 225) & enemy.bala[6].x > 0){
+
+				if(tempo == 215){
+					enemy.bala[6].y = enemy.y;
+				}
+
+				enemy.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 220 & tempo < 230) & enemy.bala[7].x > 0){
+
+				if(tempo == 220){
+					enemy.bala[7].y = enemy.y;
+				}
+
+				enemy.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 225 & tempo < 235) & enemy.bala[8].x > 0){
+
+				if(tempo == 225){
+					enemy.bala[8].y = enemy.y;
+				}
+
+				enemy.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+			if((tempo >= 230 & tempo < 240) & enemy.bala[9].x > 0){
+
+				if(tempo == 230){
+					enemy.bala[9].y = enemy.y;
+				}
+
+				enemy.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 235 & tempo < 245) & enemy.bala[10].x > 0){
+
+				if(tempo == 235){
+					enemy.bala[10].y = enemy.y;
+				}
+
+				enemy.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+			//Colisão bala inimiga -> nave
+
+			for(var i = 0; i <= 10; i++){
+
+				if(((enemy.bala[i].x <= nave.x & enemy.bala[i].x >= nave.x-30) & ((enemy.bala[i].y >= nave.y+10) & (enemy.bala[i].y <= nave.y+60)))){
+
+					nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+				}
+
+			}
+
+
+			//Colisão inimigo-nave
+
+			if((enemy.y <= nave.y+60) & (enemy.y+110 >= nave.y) & (enemy.x <= nave.x+60) & (enemy.x+110 >= nave.x))
+			{
+				nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+			}
+
+
+
+			document.getElementById("enemyact").style.top = enemy.y+"px";
+			document.getElementById("enemyact").style.left = enemy.x+"px";
+
+
+			enemy.tempo++;
+		}
+
+
+
+
+		function movimentoInimigo2(){
+
+			if(enemy2.x > 700 & tempo > 28){
+				enemy2.x=enemy2.x-10;
+
+				document.getElementById("enemy2").style.display = "block";
+				document.getElementById("enemy2").style.left = enemy2.x+"px";
+			}
+
+			if(enemy2.x == 700){
+				if(enemy2.y > 30 & enemy2.subindo == true){
+					enemy2.y-=15;
+					document.getElementById("enemy2").style.top = enemy2.y+"px";
+					//document.getElementById("bala").style.top = enemy.bala.y+"px";
+				}
+
+				if(enemy2.y <= 30){
+					enemy2.subindo = false;
+				}
+
+				if(enemy2.y <= 500 & enemy2.subindo == false){
+					enemy2.y+=15;
+					document.getElementById("enemy2").style.top = enemy2.y+"px";
+					//document.getElementById("bala").style.top = enemy.bala.y+"px";
+				}
+
+				if(enemy2.y >= 500){
+					enemy2.subindo = true;
+				}
+			}
+
+			if(((tempo >= 90 & tempo < 110) | (tempo >= 180 & tempo < 200) | tempo >= 270) & enemy2.x >= -50){
+				enemy2.x -= 50;
+				document.getElementById("enemy2").style.left = enemy2.x+"px";
+			}
+
+			if(tempo == 118 | tempo == 208){
+				enemy2.x = 800;
+				enemy2.y = 500;
+				enemy2.tiros = 0;
+
+				document.getElementById("enemy2").src = "img/cargoship.png";
+				document.getElementById("enemy2").style.left = enemy2.x+"px";
+				document.getElementById("enemy2").style.top = enemy2.y+"px";
+			}
+
+
+			//Posicionamento sistemático da bala
+
+			if(tempo >= 30 & tempo < 35){
+				enemy2.bala[0].x=enemy2.x+5;
+				enemy2.bala[0].y=enemy2.y+10;
+				document.getElementById("bala").style.left = enemy2.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy2.bala[0].y+"px";
+				document.getElementById("bala").style.display = "none";
+			}
+
+			if(tempo >= 35 & tempo < 40){
+				enemy2.bala[1].x=enemy2.x+5;
+				enemy2.bala[1].y=enemy2.y+10;
+				document.getElementById("bala2").style.left = enemy2.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy2.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "none";
+			}
+
+			if(tempo >= 40 & tempo < 45){
+				enemy2.bala[2].x=enemy2.x+5;
+				enemy2.bala[2].y=enemy2.y+10;
+				document.getElementById("bala3").style.left = enemy2.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy2.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "none";
+			}
+
+			if(tempo >= 45 & tempo < 50){
+				enemy2.bala[3].x=enemy2.x+5;
+				enemy2.bala[3].y=enemy2.y+10;
+				document.getElementById("bala4").style.left = enemy2.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy2.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "none";
+			}
+
+			if(tempo >= 50 & tempo < 55){
+				enemy2.bala[4].x=enemy2.x+5;
+				enemy2.bala[4].y=enemy2.y+10;
+				document.getElementById("bala5").style.left = enemy2.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy2.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "none";
+			}
+
+			if(tempo >= 55 & tempo < 60){
+				enemy2.bala[5].x=enemy2.x+5;
+				enemy2.bala[5].y=enemy2.y+10;
+				document.getElementById("bala6").style.left = enemy2.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy2.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "none";
+			}
+
+			if(tempo >= 60 & tempo < 65){
+				enemy2.bala[6].x=enemy2.x+5;
+				enemy2.bala[6].y=enemy2.y+10;
+				document.getElementById("bala7").style.left = enemy2.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy2.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "none";
+			}
+
+			if(tempo >= 65 & tempo < 70){
+				enemy2.bala[7].x=enemy2.x+5;
+				enemy2.bala[7].y=enemy2.y+10;
+				document.getElementById("bala8").style.left = enemy2.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy2.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "none";
+			}
+
+			if(tempo >= 70 & tempo < 75){
+				enemy2.bala[8].x=enemy2.x+5;
+				enemy2.bala[8].y=enemy2.y+10;
+				document.getElementById("bala9").style.left = enemy2.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy2.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "none";
+			}
+
+			if(tempo >= 75 & tempo < 80){
+				enemy2.bala[9].x=enemy2.x+5;
+				enemy2.bala[9].y=enemy2.y+10;
+				document.getElementById("bala10").style.left = enemy2.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy2.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "none";
+			}
+
+			if(tempo >= 80 & tempo < 85){
+				enemy2.bala[10].x=enemy2.x+5;
+				enemy2.bala[10].y=enemy2.y+10;
+				document.getElementById("bala11").style.left = enemy2.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy2.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "none";
+			}
+
+
+
+
+			//Segunda aparição
+
+
+
+
+			if(tempo >= 120 & tempo < 125){
+				enemy2.bala[0].x=enemy2.x+5;
+				enemy2.bala[0].y=enemy2.y+10;
+				document.getElementById("bala").style.left = enemy2.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy2.bala[0].y+"px";
+				document.getElementById("bala").style.display = "none";
+			}
+
+			if(tempo >= 125 & tempo < 130){
+				enemy2.bala[1].x=enemy2.x+5;
+				enemy2.bala[1].y=enemy2.y+10;
+				document.getElementById("bala2").style.left = enemy2.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy2.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "none";
+			}
+
+			if(tempo >= 130 & tempo < 135){
+				enemy2.bala[2].x=enemy2.x+5;
+				enemy2.bala[2].y=enemy2.y+10;
+				document.getElementById("bala3").style.left = enemy2.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy2.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "none";
+			}
+
+			if(tempo >= 135 & tempo < 140){
+				enemy2.bala[3].x=enemy2.x+5;
+				enemy2.bala[3].y=enemy2.y+10;
+				document.getElementById("bala4").style.left = enemy2.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy2.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "none";
+			}
+
+			if(tempo >= 140 & tempo < 145){
+				enemy2.bala[4].x=enemy2.x+5;
+				enemy2.bala[4].y=enemy2.y+10;
+				document.getElementById("bala5").style.left = enemy2.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy2.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "none";
+			}
+
+			if(tempo >= 145 & tempo < 150){
+				enemy2.bala[5].x=enemy2.x+5;
+				enemy2.bala[5].y=enemy2.y+10;
+				document.getElementById("bala6").style.left = enemy2.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy2.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "none";
+			}
+
+			if(tempo >= 150 & tempo < 155){
+				enemy2.bala[6].x=enemy2.x+5;
+				enemy2.bala[6].y=enemy2.y+10;
+				document.getElementById("bala7").style.left = enemy2.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy2.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "none";
+			}
+
+			if(tempo >= 155 & tempo < 160){
+				enemy2.bala[7].x=enemy2.x+5;
+				enemy2.bala[7].y=enemy2.y+10;
+				document.getElementById("bala8").style.left = enemy2.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy2.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "none";
+			}
+
+			if(tempo >= 160 & tempo < 165){
+				enemy2.bala[8].x=enemy2.x+5;
+				enemy2.bala[8].y=enemy2.y+10;
+				document.getElementById("bala9").style.left = enemy2.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy2.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "none";
+			}
+
+			if(tempo >= 165 & tempo < 170){
+				enemy2.bala[9].x=enemy2.x+5;
+				enemy2.bala[9].y=enemy2.y+10;
+				document.getElementById("bala10").style.left = enemy2.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy2.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "none";
+			}
+
+			if(tempo >= 170 & tempo < 175){
+				enemy2.bala[10].x=enemy2.x+5;
+				enemy2.bala[10].y=enemy2.y+10;
+				document.getElementById("bala11").style.left = enemy2.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy2.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "none";
+			}
+
+
+
+
+
+			//Terceira aparição
+
+
+
+
+
+
+			if(tempo >= 210 & tempo < 215){
+				enemy2.bala[0].x=enemy2.x+5;
+				enemy2.bala[0].y=enemy2.y+10;
+				document.getElementById("bala").style.left = enemy2.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy2.bala[0].y+"px";
+				document.getElementById("bala").style.display = "none";
+			}
+
+			if(tempo >= 215 & tempo < 220){
+				enemy2.bala[1].x=enemy2.x+5;
+				enemy2.bala[1].y=enemy2.y+10;
+				document.getElementById("bala2").style.left = enemy2.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy2.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "none";
+			}
+
+			if(tempo >= 220 & tempo < 225){
+				enemy2.bala[2].x=enemy2.x+5;
+				enemy2.bala[2].y=enemy2.y+10;
+				document.getElementById("bala3").style.left = enemy2.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy2.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "none";
+			}
+
+			if(tempo >= 225 & tempo < 230){
+				enemy2.bala[3].x=enemy2.x+5;
+				enemy2.bala[3].y=enemy2.y+10;
+				document.getElementById("bala4").style.left = enemy2.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy2.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "none";
+			}
+
+			if(tempo >= 230 & tempo < 235){
+				enemy2.bala[4].x=enemy2.x+5;
+				enemy2.bala[4].y=enemy2.y+10;
+				document.getElementById("bala5").style.left = enemy2.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy2.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "none";
+			}
+
+			if(tempo >= 235 & tempo < 240){
+				enemy2.bala[5].x=enemy2.x+5;
+				enemy2.bala[5].y=enemy2.y+10;
+				document.getElementById("bala6").style.left = enemy2.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy2.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "none";
+			}
+
+			if(tempo >= 240 & tempo < 245){
+				enemy2.bala[6].x=enemy2.x+5;
+				enemy2.bala[6].y=enemy2.y+10;
+				document.getElementById("bala7").style.left = enemy2.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy2.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "none";
+			}
+
+			if(tempo >= 245 & tempo < 250){
+				enemy2.bala[7].x=enemy2.x+5;
+				enemy2.bala[7].y=enemy2.y+10;
+				document.getElementById("bala8").style.left = enemy2.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy2.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "none";
+			}
+
+			if(tempo >= 250 & tempo < 255){
+				enemy2.bala[8].x=enemy2.x+5;
+				enemy2.bala[8].y=enemy2.y+10;
+				document.getElementById("bala9").style.left = enemy2.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy2.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "none";
+			}
+
+			if(tempo >= 255 & tempo < 260){
+				enemy2.bala[9].x=enemy2.x+5;
+				enemy2.bala[9].y=enemy2.y+10;
+				document.getElementById("bala10").style.left = enemy2.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy2.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "none";
+			}
+
+			if(tempo >= 260 & tempo < 265){
+				enemy2.bala[10].x=enemy2.x+5;
+				enemy2.bala[10].y=enemy2.y+10;
+				document.getElementById("bala11").style.left = enemy2.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy2.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "none";
+			}
+
+
+
+
+
+
+			//Tiro
+
+			if((tempo >= 35 & tempo < 55) & enemy2.bala[0].x > 0){
+
+				if(tempo == 35){
+					enemy2.bala[0].y = enemy2.y;
+				}
+
+				enemy2.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy2.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy2.bala[0].y+"px";
+				document.getElementById("bala").style.display = "block";
+			}
+
+			if((tempo >= 40 & tempo < 60) & enemy2.bala[1].x > 0){
+				if(tempo == 40){
+					enemy2.bala[1].y = enemy2.y;
+				}
+
+				enemy2.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy2.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy2.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 45 & tempo < 55) & enemy2.bala[2].x > 0){
+				if(tempo == 45){
+					enemy2.bala[2].y = enemy2.y;
+				}
+
+				enemy2.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy2.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy2.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 50 & tempo < 65) & enemy2.bala[3].x > 0){
+				if(tempo == 50){
+					enemy2.bala[3].y = enemy2.y;
+				}
+
+				enemy2.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy2.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy2.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 55 & tempo < 70) & enemy2.bala[4].x > 0){
+				if(tempo == 55){
+					enemy2.bala[4].y = enemy2.y;
+				}
+
+				enemy2.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy2.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy2.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 60 & tempo < 75) & enemy2.bala[5].x > 0){
+
+				if(tempo == 60){
+					enemy2.bala[5].y = enemy2.y;
+				}
+
+				enemy2.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy2.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy2.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 65 & tempo < 80) & enemy2.bala[5].x > 0){
+				if(tempo == 65){
+					enemy2.bala[6].y = enemy2.y;
+				}
+
+				enemy2.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy2.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy2.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 70 & tempo < 85) & enemy2.bala[7].x > 0){
+				if(tempo == 70){
+					enemy2.bala[7].y = enemy2.y;
+				}
+
+				enemy2.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy2.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy2.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 75 & tempo < 90) & enemy2.bala[8].x > 0){
+				if(tempo == 75){
+					enemy2.bala[8].y = enemy2.y;
+				}
+
+				enemy2.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy2.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy2.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+			if((tempo >= 80 & tempo < 95) & enemy2.bala[9].x > 0){
+				if(tempo == 80){
+					enemy2.bala[9].y = enemy2.y;
+				}
+
+				enemy2.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy2.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy2.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 85 & tempo < 100) & enemy2.bala[10].x > 0){
+				if(tempo == 85){
+					enemy2.bala[10].y = enemy2.y;
+				}
+
+				enemy2.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy2.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy2.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+
+
+
+			//Segunda aparição
+
+
+
+
+			if((tempo >= 125 & tempo < 135) & enemy2.bala[0].x > 0){
+
+				if(tempo == 125){
+					enemy2.bala[0].y = enemy2.y;
+				}
+
+				enemy2.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy2.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy2.bala[0].y+"px";
+				document.getElementById("bala").style.display = "block";
+			}
+
+			if((tempo >= 130 & tempo < 140) & enemy2.bala[1].x > 0){
+				if(tempo == 130){
+					enemy2.bala[1].y = enemy2.y;
+				}
+
+				enemy2.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy2.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy2.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 135 & tempo < 145) & enemy2.bala[2].x > 0){
+				if(tempo == 135){
+					enemy2.bala[2].y = enemy2.y;
+				}
+
+				enemy2.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy2.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy2.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 140 & tempo < 150) & enemy2.bala[3].x > 0){
+				if(tempo == 140){
+					enemy2.bala[3].y = enemy2.y;
+				}
+
+				enemy2.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy2.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy2.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 145 & tempo < 160) & enemy2.bala[4].x > 0){
+				if(tempo == 145){
+					enemy2.bala[4].y = enemy2.y;
+				}
+
+				enemy2.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy2.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy2.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 150 & tempo < 165) & enemy2.bala[5].x > 0){
+
+				if(tempo == 150){
+					enemy2.bala[5].y = enemy2.y;
+				}
+
+				enemy2.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy2.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy2.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 155 & tempo < 170) & enemy2.bala[5].x > 0){
+				if(tempo == 155){
+					enemy2.bala[6].y = enemy2.y;
+				}
+
+				enemy2.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy2.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy2.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 160 & tempo < 175) & enemy2.bala[7].x > 0){
+				if(tempo == 160){
+					enemy2.bala[7].y = enemy2.y;
+				}
+
+				enemy2.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy2.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy2.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 165 & tempo < 180) & enemy2.bala[8].x > 0){
+				if(tempo == 165){
+					enemy2.bala[8].y = enemy2.y;
+				}
+
+				enemy2.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy2.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy2.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+			if((tempo >= 170 & tempo < 185) & enemy2.bala[9].x > 0){
+				if(tempo == 170){
+					enemy2.bala[9].y = enemy2.y;
+				}
+
+				enemy2.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy2.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy2.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 175 & tempo < 190) & enemy2.bala[10].x > 0){
+				if(tempo == 175){
+					enemy2.bala[10].y = enemy2.y;
+				}
+
+				enemy2.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy2.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy2.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+
+
+
+
+			//Terceira aparição
+
+
+
+
+
+
+			if((tempo >= 215 & tempo < 225) & enemy2.bala[0].x > 0){
+
+				if(tempo == 215){
+					enemy2.bala[0].y = enemy2.y;
+				}
+
+				enemy2.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy2.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy2.bala[0].y+"px";
+				document.getElementById("bala").style.display = "block";
+			}
+
+			if((tempo >= 220 & tempo < 230) & enemy2.bala[1].x > 0){
+				if(tempo == 220){
+					enemy2.bala[1].y = enemy2.y;
+				}
+
+				enemy2.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy2.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy2.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 225 & tempo < 235) & enemy2.bala[2].x > 0){
+				if(tempo == 225){
+					enemy2.bala[2].y = enemy2.y;
+				}
+
+				enemy2.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy2.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy2.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 230 & tempo < 240) & enemy2.bala[3].x > 0){
+				if(tempo == 230){
+					enemy2.bala[3].y = enemy2.y;
+				}
+
+				enemy2.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy2.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy2.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 235 & tempo < 250) & enemy2.bala[4].x > 0){
+				if(tempo == 235){
+					enemy2.bala[4].y = enemy2.y;
+				}
+
+				enemy2.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy2.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy2.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 240 & tempo < 255) & enemy2.bala[5].x > 0){
+
+				if(tempo == 240){
+					enemy2.bala[5].y = enemy2.y;
+				}
+
+				enemy2.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy2.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy2.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 245 & tempo < 260) & enemy2.bala[5].x > 0){
+				if(tempo == 245){
+					enemy2.bala[6].y = enemy2.y;
+				}
+
+				enemy2.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy2.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy2.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 250 & tempo < 265) & enemy2.bala[7].x > 0){
+				if(tempo == 250){
+					enemy2.bala[7].y = enemy2.y;
+				}
+
+				enemy2.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy2.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy2.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 255 & tempo < 265) & enemy2.bala[8].x > 0){
+				if(tempo == 255){
+					enemy2.bala[8].y = enemy2.y;
+				}
+
+				enemy2.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy2.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy2.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+			if((tempo >= 260 & tempo < 275) & enemy2.bala[9].x > 0){
+				if(tempo == 260){
+					enemy2.bala[9].y = enemy2.y;
+				}
+
+				enemy2.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy2.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy2.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 265 & tempo < 280) & enemy2.bala[10].x > 0){
+				if(tempo == 265){
+					enemy2.bala[10].y = enemy2.y;
+				}
+
+				enemy2.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy2.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy2.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+			//Colisão bala inimiga -> nave
+
+			for(var i = 0; i <= 10; i++){
+
+				if(((enemy2.bala[i].x <= nave.x & enemy2.bala[i].x >= nave.x-30) & ((enemy2.bala[i].y >= nave.y+10) & (enemy2.bala[i].y <= nave.y+60)))){
+
+					nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+				}
+			}
+
+
+			//Colisão inimigo-nave
+
+			if((enemy2.y <= nave.y+60) & (enemy2.y+110 >= nave.y) & (enemy2.x <= nave.x+60) & (enemy3.x+110 >= nave.x))
+			{
+				nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+			}
+
+
+
+			document.getElementById("enemy2act").style.top = enemy2.y+"px";
+			document.getElementById("enemy2act").style.left = enemy2.x+"px";
+
+
+		}
+
+		function movimentoInimigo3(){
+
+			if(enemy3.x > 700 & tempo > 58){
+				enemy3.x=enemy3.x-10;
+				document.getElementById("enemy3").style.display = "block";
+				document.getElementById("enemy3").style.left = enemy3.x+"px";
+			}
+
+			if(enemy3.x == 700){
+				if(enemy3.y > 30 & enemy3.subindo == true){
+					enemy3.y-=15;
+					document.getElementById("enemy3").style.top = enemy3.y+"px";
+				}
+
+				if(enemy3.y <= 30){
+					enemy3.subindo = false;
+				}
+
+				if(enemy3.y <= 500 & enemy3.subindo == false){
+					enemy3.y+=15;
+					document.getElementById("enemy3").style.top = enemy3.y+"px";
+				}
+
+				if(enemy3.y >= 500){
+					enemy3.subindo = true;
+				}
+			}
+
+			if(((tempo >= 120 & tempo < 140) | (tempo >= 210 & tempo < 230) | tempo >= 300) & enemy3.x >= -50){
+				enemy3.x -= 50;
+				document.getElementById("enemy3").style.left = enemy3.x+"px";
+			}
+
+			if(tempo == 148 | tempo == 238){
+				enemy3.x = 800;
+				enemy3.y = 30;
+				enemy3.tiros = 0;
+
+				document.getElementById("enemy3").src = "img/cargoship.png";
+				document.getElementById("enemy3").style.left = enemy3.x+"px";
+				document.getElementById("enemy3").style.top = enemy3.y+"px";
+			}
+
+			//Posicionamento sistemático da bala
+
+			if(tempo >= 60 & tempo < 65){
+				enemy3.bala[0].x=enemy3.x+5;
+				enemy3.bala[0].y=enemy3.y+10;
+				document.getElementById("bala").style.left = enemy3.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy3.bala[0].y+"px";
+				document.getElementById("bala").style.display = "none";
+			}
+
+			if(tempo >= 65 & tempo < 70){
+				enemy3.bala[1].x=enemy3.x+5;
+				enemy3.bala[1].y=enemy3.y+10;
+				document.getElementById("bala2").style.left = enemy3.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy3.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "none";
+			}
+
+			if(tempo >= 70 & tempo < 75){
+				enemy3.bala[2].x=enemy3.x+5;
+				enemy3.bala[2].y=enemy3.y+10;
+				document.getElementById("bala3").style.left = enemy3.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy3.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "none";
+			}
+
+			if(tempo >= 75 & tempo < 80){
+				enemy3.bala[3].x=enemy3.x+5;
+				enemy3.bala[3].y=enemy3.y+10;
+				document.getElementById("bala4").style.left = enemy3.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy3.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "none";
+			}
+
+			if(tempo >= 80 & tempo < 85){
+				enemy3.bala[4].x=enemy3.x+5;
+				enemy3.bala[4].y=enemy3.y+10;
+				document.getElementById("bala5").style.left = enemy3.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy3.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "none";
+			}
+
+			if(tempo >= 85 & tempo < 90){
+				enemy3.bala[5].x=enemy3.x+5;
+				enemy3.bala[5].y=enemy3.y+10;
+				document.getElementById("bala6").style.left = enemy3.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy3.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "none";
+			}
+
+			if(tempo >= 90 & tempo < 95){
+				enemy3.bala[6].x=enemy3.x+5;
+				enemy3.bala[6].y=enemy3.y+10;
+				document.getElementById("bala7").style.left = enemy3.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy3.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "none";
+			}
+
+			if(tempo >= 95 & tempo < 100){
+				enemy3.bala[7].x=enemy3.x+5;
+				enemy3.bala[7].y=enemy3.y+10;
+				document.getElementById("bala8").style.left = enemy3.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy3.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "none";
+			}
+
+			if(tempo >= 100 & tempo < 105){
+				enemy3.bala[8].x=enemy3.x+5;
+				enemy3.bala[8].y=enemy3.y+10;
+				document.getElementById("bala9").style.left = enemy3.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy3.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "none";
+			}
+
+			if(tempo >= 105 & tempo < 110){
+				enemy3.bala[9].x=enemy3.x+5;
+				enemy3.bala[9].y=enemy3.y+10;
+				document.getElementById("bala10").style.left = enemy3.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy3.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "none";
+			}
+
+			if(tempo >= 85 & tempo < 90){
+				enemy3.bala[10].x=enemy3.x+5;
+				enemy3.bala[10].y=enemy3.y+10;
+				document.getElementById("bala11").style.left = enemy3.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy3.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "none";
+			}
+
+
+
+
+
+
+			//Segunda aparição
+
+
+
+
+
+
+
+
+			if(tempo >= 150 & tempo < 155){
+				enemy3.bala[0].x=enemy3.x+5;
+				enemy3.bala[0].y=enemy3.y+10;
+				document.getElementById("bala").style.left = enemy3.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy3.bala[0].y+"px";
+				document.getElementById("bala").style.display = "none";
+			}
+
+			if(tempo >= 155 & tempo < 160){
+				enemy3.bala[1].x=enemy3.x+5;
+				enemy3.bala[1].y=enemy3.y+10;
+				document.getElementById("bala2").style.left = enemy3.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy3.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "none";
+			}
+
+			if(tempo >= 160 & tempo < 165){
+				enemy3.bala[2].x=enemy3.x+5;
+				enemy3.bala[2].y=enemy3.y+10;
+				document.getElementById("bala3").style.left = enemy3.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy3.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "none";
+			}
+
+			if(tempo >= 165 & tempo < 170){
+				enemy3.bala[3].x=enemy3.x+5;
+				enemy3.bala[3].y=enemy3.y+10;
+				document.getElementById("bala4").style.left = enemy3.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy3.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "none";
+			}
+
+			if(tempo >= 170 & tempo < 175){
+				enemy3.bala[4].x=enemy3.x+5;
+				enemy3.bala[4].y=enemy3.y+10;
+				document.getElementById("bala5").style.left = enemy3.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy3.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "none";
+			}
+
+			if(tempo >= 175 & tempo < 180){
+				enemy3.bala[5].x=enemy3.x+5;
+				enemy3.bala[5].y=enemy3.y+10;
+				document.getElementById("bala6").style.left = enemy3.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy3.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "none";
+			}
+
+			if(tempo >= 180 & tempo < 185){
+				enemy3.bala[6].x=enemy3.x+5;
+				enemy3.bala[6].y=enemy3.y+10;
+				document.getElementById("bala7").style.left = enemy3.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy3.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "none";
+			}
+
+			if(tempo >= 185 & tempo < 190){
+				enemy3.bala[7].x=enemy3.x+5;
+				enemy3.bala[7].y=enemy3.y+10;
+				document.getElementById("bala8").style.left = enemy3.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy3.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "none";
+			}
+
+			if(tempo >= 190 & tempo < 195){
+				enemy3.bala[8].x=enemy3.x+5;
+				enemy3.bala[8].y=enemy3.y+10;
+				document.getElementById("bala9").style.left = enemy3.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy3.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "none";
+			}
+
+			if(tempo >= 195 & tempo < 200){
+				enemy3.bala[9].x=enemy3.x+5;
+				enemy3.bala[9].y=enemy3.y+10;
+				document.getElementById("bala10").style.left = enemy3.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy3.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "none";
+			}
+
+			if(tempo >= 200 & tempo < 205){
+				enemy3.bala[10].x=enemy3.x+5;
+				enemy3.bala[10].y=enemy3.y+10;
+				document.getElementById("bala11").style.left = enemy3.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy3.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "none";
+			}
+
+
+
+
+
+
+
+			//Terceira aparição
+
+
+
+
+
+
+
+			if(tempo >= 240 & tempo < 245){
+				enemy3.bala[0].x=enemy3.x+5;
+				enemy3.bala[0].y=enemy3.y+10;
+				document.getElementById("bala").style.left = enemy3.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy3.bala[0].y+"px";
+				document.getElementById("bala").style.display = "none";
+			}
+
+			if(tempo >= 245 & tempo < 250){
+				enemy3.bala[1].x=enemy3.x+5;
+				enemy3.bala[1].y=enemy3.y+10;
+				document.getElementById("bala2").style.left = enemy3.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy3.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "none";
+			}
+
+			if(tempo >= 250 & tempo < 255){
+				enemy3.bala[2].x=enemy3.x+5;
+				enemy3.bala[2].y=enemy3.y+10;
+				document.getElementById("bala3").style.left = enemy3.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy3.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "none";
+			}
+
+			if(tempo >= 255 & tempo < 260){
+				enemy3.bala[3].x=enemy3.x+5;
+				enemy3.bala[3].y=enemy3.y+10;
+				document.getElementById("bala4").style.left = enemy3.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy3.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "none";
+			}
+
+			if(tempo >= 260 & tempo < 265){
+				enemy3.bala[4].x=enemy3.x+5;
+				enemy3.bala[4].y=enemy3.y+10;
+				document.getElementById("bala5").style.left = enemy3.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy3.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "none";
+			}
+
+			if(tempo >= 265 & tempo < 270){
+				enemy3.bala[5].x=enemy3.x+5;
+				enemy3.bala[5].y=enemy3.y+10;
+				document.getElementById("bala6").style.left = enemy3.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy3.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "none";
+			}
+
+			if(tempo >= 270 & tempo < 275){
+				enemy3.bala[6].x=enemy3.x+5;
+				enemy3.bala[6].y=enemy3.y+10;
+				document.getElementById("bala7").style.left = enemy3.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy3.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "none";
+			}
+
+			if(tempo >= 275 & tempo < 280){
+				enemy3.bala[7].x=enemy3.x+5;
+				enemy3.bala[7].y=enemy3.y+10;
+				document.getElementById("bala8").style.left = enemy3.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy3.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "none";
+			}
+
+			if(tempo >= 280 & tempo < 285){
+				enemy3.bala[8].x=enemy3.x+5;
+				enemy3.bala[8].y=enemy3.y+10;
+				document.getElementById("bala9").style.left = enemy3.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy3.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "none";
+			}
+
+			if(tempo >= 285 & tempo < 290){
+				enemy3.bala[9].x=enemy3.x+5;
+				enemy3.bala[9].y=enemy3.y+10;
+				document.getElementById("bala10").style.left = enemy3.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy3.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "none";
+			}
+
+			if(tempo >= 300 & tempo < 305){
+				enemy3.bala[10].x=enemy3.x+5;
+				enemy3.bala[10].y=enemy3.y+10;
+				document.getElementById("bala11").style.left = enemy3.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy3.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "none";
+			}
+
+
+
+
+
+
+
+
+			//Tiro
+
+			if((tempo >= 65 & tempo < 85) & enemy3.bala[0].x > 0){
+
+				if(tempo == 65){
+					enemy3.bala[0].y = enemy3.y;
+				}
+
+				enemy3.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy3.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy3.bala[0].y+"px";
+				document.getElementById("bala").style.display = "block";
+			}
+
+			if((tempo >= 70 & tempo < 90) & enemy3.bala[1].x > 0){
+				if(tempo == 70){
+					enemy3.bala[1].y = enemy3.y;
+				}
+
+				enemy3.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy3.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy3.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 75 & tempo < 95) & enemy3.bala[2].x > 0){
+				if(tempo == 75){
+					enemy3.bala[2].y = enemy3.y;
+				}
+
+				enemy3.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy3.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy3.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 80 & tempo < 95) & enemy3.bala[3].x > 0){
+				if(tempo == 80){
+					enemy3.bala[3].y = enemy3.y;
+				}
+
+				enemy3.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy3.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy3.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 85 & tempo < 100) & enemy3.bala[4].x > 0){
+				if(tempo == 85){
+					enemy3.bala[4].y = enemy3.y;
+				}
+
+				enemy3.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy3.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy3.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 90 & tempo < 105) & enemy3.bala[5].x > 0){
+
+				if(tempo == 90){
+					enemy3.bala[5].y = enemy3.y;
+				}
+
+				enemy3.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy3.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy3.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 95 & tempo < 110) & enemy3.bala[6].x > 0){
+
+				if(tempo == 95){
+					enemy3.bala[6].y = enemy3.y;
+				}
+
+				enemy3.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy3.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy3.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 100 & tempo < 115) & enemy3.bala[7].x > 0){
+
+				if(tempo == 100){
+					enemy3.bala[7].y = enemy3.y;
+				}
+
+				enemy3.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy3.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy3.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 105 & tempo < 115) & enemy3.bala[8].x > 0){
+
+				if(tempo == 105){
+					enemy3.bala[8].y = enemy3.y;
+				}
+
+				enemy3.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy3.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy3.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+			if((tempo >= 110 & tempo < 120) & enemy3.bala[9].x > 0){
+
+				if(tempo == 110){
+					enemy3.bala[9].y = enemy3.y;
+				}
+
+				enemy3.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy3.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy3.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 115 & tempo < 125) & enemy3.bala[9].x > 0){
+
+				if(tempo == 115){
+					enemy3.bala[10].y = enemy3.y;
+				}
+
+				enemy3.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy3.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy3.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+			
+
+
+
+			//Segunda aparição
+
+
+
+
+
+
+
+
+
+			if((tempo >= 155 & tempo < 165) & enemy3.bala[0].x > 0){
+
+				if(tempo == 155){
+					enemy3.bala[0].y = enemy3.y;
+				}
+
+				enemy3.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy3.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy3.bala[0].y+"px";
+				document.getElementById("bala").style.display = "block";
+			}
+
+			if((tempo >= 160 & tempo < 170) & enemy3.bala[1].x > 0){
+				if(tempo == 160){
+					enemy3.bala[1].y = enemy3.y;
+				}
+
+				enemy3.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy3.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy3.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 165 & tempo < 175) & enemy3.bala[2].x > 0){
+				if(tempo == 165){
+					enemy3.bala[2].y = enemy3.y;
+				}
+
+				enemy3.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy3.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy3.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 170 & tempo < 180) & enemy3.bala[3].x > 0){
+				if(tempo == 170){
+					enemy3.bala[3].y = enemy3.y;
+				}
+
+				enemy3.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy3.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy3.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 175 & tempo < 185) & enemy3.bala[4].x > 0){
+				if(tempo == 175){
+					enemy3.bala[4].y = enemy3.y;
+				}
+
+				enemy3.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy3.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy3.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 180 & tempo < 190) & enemy3.bala[5].x > 0){
+
+				if(tempo == 180){
+					enemy3.bala[5].y = enemy3.y;
+				}
+
+				enemy3.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy3.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy3.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 185 & tempo < 195) & enemy3.bala[6].x > 0){
+
+				if(tempo == 185){
+					enemy3.bala[6].y = enemy3.y;
+				}
+
+				enemy3.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy3.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy3.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 190 & tempo < 200) & enemy3.bala[7].x > 0){
+
+				if(tempo == 190){
+					enemy3.bala[7].y = enemy3.y;
+				}
+
+				enemy3.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy3.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy3.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 195 & tempo < 205) & enemy3.bala[8].x > 0){
+
+				if(tempo == 195){
+					enemy3.bala[8].y = enemy3.y;
+				}
+
+				enemy3.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy3.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy3.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+			if((tempo >= 200 & tempo < 210) & enemy3.bala[9].x > 0){
+
+				if(tempo == 200){
+					enemy3.bala[9].y = enemy3.y;
+				}
+
+				enemy3.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy3.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy3.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 205 & tempo < 215) & enemy3.bala[9].x > 0){
+
+				if(tempo == 205){
+					enemy3.bala[10].y = enemy3.y;
+				}
+
+				enemy3.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy3.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy3.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+
+
+
+
+			//Terceira aparição
+
+
+
+
+
+
+
+
+			if((tempo >= 245 & tempo < 255) & enemy3.bala[0].x > 0){
+
+				if(tempo == 245){
+					enemy3.bala[0].y = enemy3.y;
+				}
+
+				enemy3.bala[0].x-=30;
+				document.getElementById("bala").style.left = enemy3.bala[0].x+"px";
+				document.getElementById("bala").style.top = enemy3.bala[0].y+"px";
+				document.getElementById("bala").style.display = "block";
+			}
+
+			if((tempo >= 250 & tempo < 260) & enemy3.bala[1].x > 0){
+				if(tempo == 250){
+					enemy3.bala[1].y = enemy3.y;
+				}
+
+				enemy3.bala[1].x-=30;
+				document.getElementById("bala2").style.left = enemy3.bala[1].x+"px";
+				document.getElementById("bala2").style.top = enemy3.bala[1].y+"px";
+				document.getElementById("bala2").style.display = "block";
+			}
+
+			if((tempo >= 255 & tempo < 265) & enemy3.bala[2].x > 0){
+				if(tempo == 255){
+					enemy3.bala[2].y = enemy3.y;
+				}
+
+				enemy3.bala[2].x-=30;
+				document.getElementById("bala3").style.left = enemy3.bala[2].x+"px";
+				document.getElementById("bala3").style.top = enemy3.bala[2].y+"px";
+				document.getElementById("bala3").style.display = "block";
+			}
+
+			if((tempo >= 260 & tempo < 270) & enemy3.bala[3].x > 0){
+				if(tempo == 260){
+					enemy3.bala[3].y = enemy3.y;
+				}
+
+				enemy3.bala[3].x-=30;
+				document.getElementById("bala4").style.left = enemy3.bala[3].x+"px";
+				document.getElementById("bala4").style.top = enemy3.bala[3].y+"px";
+				document.getElementById("bala4").style.display = "block";
+			}
+
+			if((tempo >= 265 & tempo < 275) & enemy3.bala[4].x > 0){
+				if(tempo == 265){
+					enemy3.bala[4].y = enemy3.y;
+				}
+
+				enemy3.bala[4].x-=30;
+				document.getElementById("bala5").style.left = enemy3.bala[4].x+"px";
+				document.getElementById("bala5").style.top = enemy3.bala[4].y+"px";
+				document.getElementById("bala5").style.display = "block";
+			}
+
+			if((tempo >= 270 & tempo < 280) & enemy3.bala[5].x > 0){
+
+				if(tempo == 270){
+					enemy3.bala[5].y = enemy3.y;
+				}
+
+				enemy3.bala[5].x-=30;
+				document.getElementById("bala6").style.left = enemy3.bala[5].x+"px";
+				document.getElementById("bala6").style.top = enemy3.bala[5].y+"px";
+				document.getElementById("bala6").style.display = "block";
+			}
+
+			if((tempo >= 275 & tempo < 285) & enemy3.bala[6].x > 0){
+
+				if(tempo == 275){
+					enemy3.bala[6].y = enemy3.y;
+				}
+
+				enemy3.bala[6].x-=30;
+				document.getElementById("bala7").style.left = enemy3.bala[6].x+"px";
+				document.getElementById("bala7").style.top = enemy3.bala[6].y+"px";
+				document.getElementById("bala7").style.display = "block";
+			}
+
+			if((tempo >= 280 & tempo < 290) & enemy3.bala[7].x > 0){
+
+				if(tempo == 280){
+					enemy3.bala[7].y = enemy3.y;
+				}
+
+				enemy3.bala[7].x-=30;
+				document.getElementById("bala8").style.left = enemy3.bala[7].x+"px";
+				document.getElementById("bala8").style.top = enemy3.bala[7].y+"px";
+				document.getElementById("bala8").style.display = "block";
+			}
+
+			if((tempo >= 285 & tempo < 295) & enemy3.bala[8].x > 0){
+
+				if(tempo == 285){
+					enemy3.bala[8].y = enemy3.y;
+				}
+
+				enemy3.bala[8].x-=30;
+				document.getElementById("bala9").style.left = enemy3.bala[8].x+"px";
+				document.getElementById("bala9").style.top = enemy3.bala[8].y+"px";
+				document.getElementById("bala9").style.display = "block";
+			}
+
+			if((tempo >= 290 & tempo < 300) & enemy3.bala[9].x > 0){
+
+				if(tempo == 290){
+					enemy3.bala[9].y = enemy3.y;
+				}
+
+				enemy3.bala[9].x-=30;
+				document.getElementById("bala10").style.left = enemy3.bala[9].x+"px";
+				document.getElementById("bala10").style.top = enemy3.bala[9].y+"px";
+				document.getElementById("bala10").style.display = "block";
+			}
+
+			if((tempo >= 295 & tempo < 305) & enemy3.bala[9].x > 0){
+
+				if(tempo == 295){
+					enemy3.bala[10].y = enemy3.y;
+				}
+
+				enemy3.bala[10].x-=30;
+				document.getElementById("bala11").style.left = enemy3.bala[10].x+"px";
+				document.getElementById("bala11").style.top = enemy3.bala[10].y+"px";
+				document.getElementById("bala11").style.display = "block";
+			}
+
+
+			//Colisão bala inimiga -> nave
+
+			for(var i = 0; i <= 10; i++){
+
+				if(((enemy3.bala[i].x <= nave.x & enemy3.bala[i].x >= nave.x-30) & ((enemy3.bala[i].y >= nave.y+10) & (enemy3.bala[i].y <= nave.y+60)))){
+
+					nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+				}
+			}
+
+			//Colisão inimigo-nave
+
+			if((enemy3.y <= nave.y+60) & (enemy3.y+110 >= nave.y) & (enemy3.x <= nave.x+60) & (enemy3.x+110 >= nave.x))
+			{
+				nave.vivo = false;
+
+					setTimeout(()=>{
+						document.getElementById("nave").src = "img/shipExplosion.gif";
+					},2500);
+
+					setTimeout(()=>{
+						document.getElementById("nave").style.display = "none";
+					},5500);
+
+					setTimeout(()=>{
+						document.getElementById("game_over").style.display = "block";
+					},6500);
+			}
+
+
+
+			document.getElementById("enemy3act").style.top = enemy3.y+"px";
+			document.getElementById("enemy3act").style.left = enemy3.x+"px";
+
+
+
+
+			if(tempo >= 250 & enemy3.vivo == false){
+				apareceDialogo();
+				document.getElementById("finalBoss").style.display = "block";
+			}
+
+		}
+
+		function movimentoBoss(){
+
+			if(finalBoss.x > 600){
+				finalBoss.x-=10;
+				document.getElementById("finalBoss").style.left = finalBoss.x+"px";
+			}
+
+			if(finalBoss.x == 600){
+				if(finalBoss.y < 500 & finalBoss.subindo == false){
+					finalBoss.y+=20;
+					document.getElementById("finalBoss").style.top = finalBoss.y+"px";
+				}
+
+				if(finalBoss.y >= 500){
+					finalBoss.subindo = true;
+				}
+
+				if(finalBoss.y > 40 & finalBoss.subindo == true){
+					finalBoss.y-=20;
+					document.getElementById("finalBoss").style.top = finalBoss.y+"px";
+				}
+
+				if(finalBoss.y <= 40){
+					finalBoss.subindo = false;
+				}
+			}
+
+			
+		}
+
+
+
+		function init_atirar(){
+
+			if(nave.bala.x >= 800){
+				nave.bala.x = nave.x+25;
+				nave.bala.y = nave.y+25;
+ 
+				document.getElementById("proj").style.top = nave.bala.y+"px";
+				document.getElementById("proj").style.left =  nave.bala.x+"px";
+				document.getElementById("proj").style.display =  "block";
+			}
+
+
+			tempoBala = setInterval(atirar,200);
+		}
+
+		function atirar(){
+			
+			if(nave.bala.x < 800){
+				nave.bala.x+=30;
+				document.getElementById("proj").style.left =  nave.bala.x+"px";
+
+				if(((nave.bala.x+13 >= enemy.x & nave.bala.x+13 <= enemy.x+30) & ((nave.bala.y >= (enemy.y+25)) & (nave.bala.y <= enemy.y+100)))){
+
+					setTimeout(() => {
+						document.getElementById("enemyact").style.display = "block";
+					}, 500);
+
+					setTimeout(() => {
+						document.getElementById("enemyact").style.display = "none";
+					}, 1000);
+
+					enemy.tiros++;
+
+					if(enemy.tiros > 4){
+						document.getElementById("enemy").src = "img/enemyAtk.gif";
+					}
+
+					if(enemy.tiros == 6){
+
+						enemy.vivo = false;
+
+						setTimeout(()=> {
+							document.getElementById("enemy").src = "img/enemyExplosion.gif";
+						}, 2500);
+
+						setTimeout(() => {
+							enemy.x = -100;
+							document.getElementById("enemy").style.display = "none";
+							document.getElementById("enemy").style.left = enemy.x+"px";
+						}, 4500);
+					}
+
+				}
+
+				if(((nave.bala.x+13 >= enemy2.x & nave.bala.x+13 <= enemy2.x+30) & ((nave.bala.y >= (enemy2.y+25)) & (nave.bala.y <= enemy2.y+100)))){
+
+					setTimeout(() => {
+						document.getElementById("enemy2act").style.display = "block";
+					}, 500);
+
+					setTimeout(() => {
+						document.getElementById("enemy2act").style.display = "none";
+					}, 1000);
+
+					enemy2.tiros++;
+
+					if(enemy2.tiros > 4){
+						document.getElementById("enemy2").src = "img/enemyAtk.gif";
+					}
+
+					if(enemy2.tiros == 6){
+
+						enemy2.vivo = false;
+
+						setTimeout(()=> {
+							document.getElementById("enemy2").src = "img/enemyExplosion.gif";
+						}, 2500);
+
+						setTimeout(() => {
+							enemy2.x = -100;
+							document.getElementById("enemy2").style.display = "none";
+							document.getElementById("enemy2").style.left = enemy.x+"px";
+						}, 4500);
+					}
+				}
+
+				if(((nave.bala.x+13 >= enemy3.x & nave.bala.x+13 <= enemy3.x+30) & ((nave.bala.y >= (enemy3.y+25)) & (nave.bala.y <= enemy3.y+100)))){
+
+					setTimeout(() => {
+						document.getElementById("enemy3act").style.display = "block";
+					}, 500);
+
+					setTimeout(() => {
+						document.getElementById("enemy3act").style.display = "none";
+					}, 1000);
+
+					enemy3.tiros++;
+
+					if(enemy3.tiros > 4){
+						document.getElementById("enemy3").src = "img/enemyAtk.gif";
+					}
+
+					if(enemy3.tiros == 6){
+
+						enemy3.vivo = false;
+
+						setTimeout(()=> {
+							document.getElementById("enemy3").src = "img/enemyExplosion.gif";
+						}, 2500);
+
+						setTimeout(() => {
+							enemy3.x = -100;
+							document.getElementById("enemy3").style.display = "none";
+							document.getElementById("enemy3").style.left = enemy3.x+"px";
+						}, 4500);
+					}
+				}
+
+
+			} else {
+				clearInterval(tempoBala);
+			}
+		}
+
+
+
+		function inicioAbaixar(){
+			abaixo = setInterval(abaixar,200);
+			clearInterval(esquerda);
+			clearInterval(direita);
+			clearInterval(acima);
+		}
+
+		function fimAbaixar(){
+			clearInterval(abaixo);
+			//document.getElementById("nave").src = "img/ship.png";
+		}
+
+		function inicioSubir(){
+			acima = setInterval(subir, 200);
+			clearInterval(esquerda);
+			clearInterval(direita);
+			clearInterval(abaixo);
+		}
+
+		function fimSubir(){
+			clearInterval(acima);
+			//document.getElementById("nave").src = "img/ship.png";
+		}		
+
+		function inicioEsquerda(){
+			esquerda = setInterval(esquerdar,200);
+			clearInterval(abaixo);
+			clearInterval(direita);
+			clearInterval(acima);
+		}
+
+		function fimEsquerda(){
+			clearInterval(esquerda);
+		}
+
+		function inicioDireita(){
+			direita = setInterval(direitar,200);
+			clearInterval(esquerda);
+			clearInterval(abaixo);
+			clearInterval(acima);
+		}
+
+		function fimDireita(){
+			clearInterval(direita);
+		}
+
+
+		function abaixar(){
+
+			if(nave.y <= 500 & nave.vivo == true){
+				nave.y+=20;
+				document.getElementById("nave").style.top = nave.y+"px";
+				//document.getElementById("nave").src = "img/ship_down.png";
+			}
+		}
+
+		function subir(){
+			if(nave.y >= 30 & nave.vivo == true){
+				nave.y-=20;
+				document.getElementById("nave").style.top = nave.y+"px";
+				//document.getElementById("nave").src = "img/ship_up.png";
+			}
+		}
+
+		function direitar(){
+			if(nave.x < 200 & nave.vivo == true){
+				nave.x+=20;
+				document.getElementById("nave").style.left = nave.x+"px";
+			}
+		}
+
+		function esquerdar(){
+			if(nave.x > 50 & nave.vivo == true){
+				nave.x-=20;
+				document.getElementById("nave").style.left = nave.x+"px";
+			}
+		}
+
+		function apareceDialogo(){
+			document.getElementById("dialogo").style.display = "block";
+
+			setTimeout(()=>{
+				document.getElementById("inimigo").src = "img/foradoar.png";
+				document.getElementById("inimigo").style.display = "block";
+			}, 1000);
+
+			setTimeout(()=>{
+				document.getElementById("inimigo").src = "img/sargento.png";
+			}, 2000);
+
+			setTimeout(()=>{
+				formarDialogo(1);
+			}, 3000);
+
+			setTimeout(()=>{
+				formarDialogo(2);
+			}, 7000);	
+
+			setTimeout(()=>{
+				document.getElementById("inimigo").src = "img/foradoar.png";
+			}, 8000);
+
+			setTimeout(()=>{
+				document.getElementById("inimigo").src = "img/sargento.png";
+			}, 8500);
+
+			setTimeout(()=>{
+				document.getElementById("inimigo").src = "img/foradoar.png";
+			}, 9000);
+
+			setTimeout(()=>{
+				document.getElementById("inimigo").style.display = "none";
+				document.getElementById("dialogo").style.display = "none";
+				document.getElementById("dialogo_txt").style.display = "none";
+			}, 12000);
+
+			setInterval(movimentoBoss,200);		
+		}
+
+		function formarDialogo(ch){
+			var dialogo = ["Um", "potencial", "inimigo", "está", "acabando", "com", "as", "nossas", "naves!"];
+
+			var dialogo2 = ["Vamos", "acabar", "com", "ele!"];
+
+			var diag = "";
+
+			if(ch == 1){
+				for(var i = 0; i < dialogo.length; i++){
+					diag = diag+dialogo[i]+" ";
+					document.getElementById("dialogo_txt").innerHTML = diag;
+				}
+			}
+
+			if(ch == 2){
+				for(var i = 0; i < dialogo2.length; i++){
+					diag = diag+dialogo2[i]+" ";
+					document.getElementById("dialogo_txt").innerHTML = diag;
+				}
+			}
+		}
+
+	</script>
+
+
+	<tela>
+
+		<img src="img/scenary/stage1_sky.jpg" id="sky">
+		<img src="img/scenary/stage1_land.gif" id="land">
+
+
+		<img src="img/cargoship.png" id="enemy">
+		<img src="img/cargoship.png" id="enemy2">
+		<img src="img/cargoship.png" id="enemy3"> 
+		<img src="img/cargoshipAct.png" id="enemyact">
+		<img src="img/cargoshipAct.png" id="enemy2act">
+		<img src="img/cargoshipAct.png" id="enemy3act">
+
+		<img src="img/finalBoss.png" id="finalBoss">
+
+		
+
+		<div id="bala"></div>
+		<div id="bala2"></div>
+		<div id="bala3"></div>
+		<div id="bala4"></div>
+		<div id="bala5"></div>
+		<div id="bala6"></div>
+		<div id="bala7"></div>
+		<div id="bala8"></div>
+		<div id="bala9"></div>
+		<div id="bala10"></div>
+		<div id="bala11"></div>
+
+		<img src="img/ship.png" id="nave">
+
+		<div id="proj"></div>
+
+		<div id="game_over">
+			<p id="go_tit">Game Over</p>
+			<a href="stage1.html" id="reiniciar">Reiniciar</a>
+		</div>
+
+		<div id="dialogo">
+			<img src="img/sargento.png" id="inimigo">
+			<p id="dialogo_txt"></p>
+		</div>
+
+
+	</tela>
+
+	<!--Controles -->
+
+	<button id="arrow" ontouchstart="inicioSubir()" ontouchend="fimSubir()"></button>
+	<button id="arrow2" ontouchstart="inicioAbaixar()" ontouchend="fimAbaixar()" ></button>
+	<button id="arrow3" ontouchstart="inicioDireita()" ontouchend="fimDireita()"></button>
+	<!-- Usar ontouchstart e ontouchend se quiser para substituir onmousedown e onmouseup -->
+	<button id="arrow4" ontouchstart="inicioEsquerda()" ontouchend="fimEsquerda()"></button>
+	<button id="botao" onclick="init_atirar()" ontouchend="init_atirar()"></button>
+
+	<barra></barra>
+	<barra2></barra2>
+</body>
+</html>
